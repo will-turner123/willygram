@@ -1,0 +1,136 @@
+.posts-content{
+    margin-top:20px;    
+}
+.ui-w-40 {
+    width: 40px !important;
+    height: 40px !important;
+}
+.default-style .ui-bordered {
+    border: 1px solid rgba(24,28,33,0.06);
+}
+.ui-bg-cover {
+    background-color: transparent;
+    background-position: center center;
+    background-size: cover;
+}
+.ui-rect {
+    padding-top: 50% !important;
+}
+
+.ui-rect-container{
+    max-height: 500px;
+    max-width: 500px;
+}
+
+
+.ui-rect, .ui-rect-30, .ui-rect-60, .ui-rect-67, .ui-rect-75 {
+    position: relative !important;
+    display: block !important;
+    padding-top: 100% !important;
+    width: 100% !important;
+}
+.d-flex, .d-inline-flex, .media, .media>:not(.media-body), .jumbotron, .card {
+    -ms-flex-negative: 1;
+    flex-shrink: 1;
+}
+.bg-dark {
+    background-color: rgba(24,28,33,0.9) !important;
+}
+.card-footer, .card hr {
+    border-color: rgba(24,28,33,0.06);
+}
+.ui-rect-content {
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+}
+.default-style .ui-bordered {
+    border: 1px solid rgba(24,28,33,0.06);
+}
+
+
+.liked-post{
+    color: red;
+}
+
+
+/*==================================================
+  Follower List CSS
+  ==================================================*/
+
+  .people-nearby .google-maps{
+    background: #f8f8f8;
+    border-radius: 4px;
+    border: 1px solid #f1f2f2;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .people-nearby .google-maps .map{
+    height: 300px;
+    width: 100%;
+    border: none;
+  }
+  
+  .people-nearby .nearby-user{
+    padding: 20px 0;
+    border-top: 1px solid #f1f2f2;
+    border-bottom: 1px solid #f1f2f2;
+    margin-bottom: 20px;
+  }
+  
+  img.profile-photo-lg{
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+  }
+
+
+/* comment stuff */
+.post-comment > .profile-photo-sm{
+    margin-right: 10px;
+}
+.post-comment{
+    display: inline-flex;
+    width: 100%;
+}
+.post-comment form{
+    width: 100%;
+}
+
+img.profile-photo-md {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+}
+
+img.profile-photo-sm {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+}
+
+.text-green {
+    color: #8dc63f;
+}
+
+.text-red {
+    color: #ef4136;
+}
+
+.following {
+    color: #8dc63f;
+    font-size: 12px;
+    margin-left: 20px;
+}
+.delete-comment{
+    float: right;
+    justify-content: end;
+    align-items: flex-end;
+}
+
+.asterisk{
+    display: inline-block;
+}

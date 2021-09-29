@@ -1,0 +1,298 @@
+{% extends "home/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row ng-scope">
+        <div class="col-md-4 col-sm-12">
+            <div class="card panel panel-default">
+                <div class="panel-body text-center card-body">
+                    <div class="container-fluid">
+                        <div class="pv-lg"><img class="center-block img-responsive img-thumbnail  img-circle thumb96" src="{{viewed_user.profile.image.url}}" alt="{{viewed_user.username}}"></div>
+                        <h3 class="m0 text-bold pt-2"><a href="{% url 'view-profile' username=viewed_user.username %}">/u/{{viewed_user.username}}</a></h3>
+                        <div class="mv-lg">
+                            <p>{{ viewed_user.profile.bio }}</p>
+                        </div>
+                        <div class="row pb-4">
+                            <div class="col-lg-6 col-sm-12">
+                                {% if is_following %}
+                                <button class="btn btn-secondary w-100" onClick="followUser(this)" data-pk="{{ viewed_user.pk }}" is-following="{{ is_following }}">Unfollow</button>
+                                {% else %}
+                                <button class="btn btn-primary w-100" onClick="followUser(this)" data-pk="{{ viewed_user.pk }}" is-following="{{ is_following }}">Follow</button>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <a href="{% url 'dm' username=viewed_user.username %}"><button class="btn btn-info w-100">Message</button></a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <a href="{% url 'view-followers' username=viewed_user.username %}">
+                                    <h3 class="text-decoration-none text-primary">Followers</h3>
+                                    <h4 class="text-decoration-none text-muted" id="followCount">{{ follower_count }}</h4>
+                                </a>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <a href="{% url 'view-following' username=viewed_user.username %}">
+                                    <h3 class="text-decoration-none text-primary">Following</h3>
+                                    <h4 class="text-decoration-none text-muted">{{ following_count }}</h4>
+                                </a>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12 text-center">
+                                <h4 class="text-dark">Likes</h4>
+                                <h5 class="text-muted">{{ likes }}</h5>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12 text-center">
+                                <h4 class="text-dark">Last Seen</h4>
+                                <h5 class="text-muted">{{ viewed_user.last_login|naturaltime}}</h5>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12 text-center">
+                                <h4 class="text-dark">Joined</h4>
+                                <h5 class="text-muted">{{ viewed_user.date_joined|naturaltime}}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8 col-sm-12">
+            {% for pk, post in posts.items %}
+            <div class="col-lg-12 col-sm-12" id="post-{{pk}}">
+                <div class="card mb-4 post-card">
+                    <div class="card-body">
+                        <div class="media mb-3">
+                                <a href="{% url 'view-profile' username=post.post.author.username %}">
+                                <img src="{{ post.post.author.profile.image.url }}" class="d-block ui-w-40 rounded-circle" alt="">
+                                </a>
+                                <div class="media-body ml-3">
+                                    <a href="{% url 'view-profile' username=post.post.author.username %}">
+                                    /u/{{ post.post.author.username}}
+                                    <div class="text-muted small">{{ post.post.date_posted|naturaltime}}</div>
+                                    </a>
+                                </div>
+                        </div>
+                        {% if post.post.image %}
+                        <div class="ui-rect-container">
+                            <div class="ui-rect ui-bg-cover" style="background-image: url('{{ post.post.image.url }}')"></div>
+                        </div>
+                        {% endif %}
+                        <p>
+                            {{ post.post.description }}
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        {% if post.has_liked %}
+                        <a href="javascript:void(0)" onclick="likePost(this)" data-pk="{{ pk }}" data-has-liked="{{ has_liked }}" class="d-inlike-block liked-post">
+                        {% else %}
+                        <a href="javascript:void(0)" onclick="likePost(this)" data-pk="{{ pk }}" data-has-liked="{{ has_liked }}" class="d-inlike-block text-muted">
+                        {% endif %}
+                        <strong id="likeCount">{{ post.likes }}</strong> Likes
+                            
+                        </a>
+                        <a href="#comments{{pk}}" role="button" data-toggle="collapse" aria-expanded="false" class="d-inlike-block text-muted ml-3" aria-controls="comments{{pk}}">
+                            <strong id="commentCounter{{pk}}">{{ post.comment_count }}</strong>  Comments
+                        </a>
+                        {% if post.post.author == request.user or request.user.is_superuser %}
+                        <a href="javascript:void(0)" onClick="deletePost(this)" class="text-danger d-inline-block ml-3" data-pk="{{ pk }}"><i class="far fa-trash-alt"></i></a>
+                        {% endif  %}
+                        <div class="comments collapse pt-2" id="comments{{pk}}">
+                            {% for comment in post.comments %}
+                            <div class="post-comment comment-section{{pk}}">
+                                <img src="{{ comment.author.profile.image.url }}" class="profile-photo-sm" alt="{{ comment.author.username }}">
+        
+                                <p>
+                                    <a href="{% url 'view-profile' username=comment.author.username %}">{{ comment.author.username }}</a>
+                                    {{ comment.content }}
+                                </p>
+                                {% if comment.author == request.user or request.user.is_superuser %}
+                                <a href="javascript:void(0)" onClick="deleteComment(this)" class="text-danger d-inlike-block ml-3 delete-comment" data-pk="{{comment.pk}}"><i class="far fa-trash-alt"></i></a>
+                                {% endif %}
+        
+                            </div>
+                            {% endfor %}
+                            <div class="post-comment">
+                                <img src="{{ request.user.profile.image.url }}" class="profile-photo-sm" alt="{{ request.user.username }}">
+                                <form id="submitComment" class="submitComment" data-pk="{{pk}}">
+                                    <input type="text" class="form-control" name="content" placeholder="Post a comment" maxlength="500" id="submitCommentText" class="submittedCommentText">
+                                    <input type="hidden" value="{{pk}}" name="post" id="commentPK">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+var has_liked = False;
+var submitCounter = 0;
+$('.submitComment').submit(function(event){
+    event.preventDefault();
+    var form = $(this);
+    var data = form.serialize();
+    $.ajax({
+        type: 'GET',
+        url: "{% url 'create-comment' %}",
+        data: data,
+        success: function(response){
+            if(!response["valid"]){
+                alert("Something went wrong when trying to create a comment:/")
+            }
+            else{
+                if(response["commented"]){
+                    console.log('here!')
+                    var urlParams = new URLSearchParams(data);
+                    var myParam = urlParams.get('post');
+                    var myContent = urlParams.get('content')
+                    var commentId = $("#comments" + myParam);
+                    var to_reset = $('form.submittedCommentText[data-pk="' + myParam + '"]')
+                    to_reset.trigger("reset");
+                    var commentCount = $("#commentCounter" + myParam)
+                    commentCount.html(Number(commentCount.text())+1)
+                    console.log(data.post);
+                    var to_append = '<div class="post-comment" data-comment-pk="' + commentId + '"style="display:none;" id="fadeIn' + submitCounter + '"><img src="{{ request.user.profile.image.url }}" class="profile-photo-sm" alt="{{ request.user.username }}"><p><a href="{% url "view-profile" username=request.user.username %}">{{ request.user.username }}</a> ' + myContent + ' </p>'
+                    to_append = to_append + '<a href="javascript:void(0)" onClick="deleteComment(this)" class="text-danger d-inlike-block ml-3 delete-comment" data-pk="' + response["id"] + '"><i class="far fa-trash-alt"></i></a></div>'
+                    $(commentId).prepend(to_append);
+                    $('#fadeIn' + submitCounter).fadeIn('slow');
+                    submitCounter = submitCounter + 1;
+                }
+            }
+        }
+    })
+})
+function deleteComment(element){
+    var element = $(element);
+    var pk = element.attr("data-pk");
+    $.ajax({
+        type: 'GET',
+        url: "{% url 'delete-comment' %}",
+        data: {"comment": pk},
+        success: function(response){
+            if(!response["valid"]){
+                alert("Something went wrong when trying to delete this comment. Let a webmaster know!")
+            }
+            else{
+                if(response["deleted"]){
+                    // var deleteComment = $('div[data-comment-pk="' + pk + '"]');
+                    // var commentId = '.comment-section' + pk
+                    // var deleteComment = $(commentId);
+                    var deleteComment = element.parent();
+                    deleteComment.fadeOut();
+                }
+            }
+        }
+    })      
+}
+
+function deletePost(element){
+    var element = $(element);
+    var pk = element.attr("data-pk");
+    $.ajax({
+        type: 'GET',
+        url: "{% url 'delete-post' %}",
+        data: {"post": pk},
+        success: function(response){
+            if(!response["valid"]){
+                alert("Something went wrong trying to delete this post. Let a webmaster know!")
+            }
+            else{
+                if(response["deleted"]){
+                    var card_id = "#post-" + pk
+                    $(card_id).fadeOut();
+                }
+            }
+        }
+    })
+}
+function likePost(element){
+    var element = $(element);
+    var pk = element.attr("data-pk");
+    $.ajax({
+            type: 'GET',
+            url: "{% url 'like-post' %}",
+            data: {"post": pk},
+            success: function(response){
+                if(!response["valid"]){
+                    alert("Something went wrong trying to like this post. Let a webmaster know!")
+                }
+                else{
+                    if(response["liked"] === false){
+                        element.removeClass('liked-post');
+                        element.addClass('text-muted')
+                        element.attr("data-has-liked","false");
+                        var likeCount = element.find("#likeCount").text();
+                        element.find("#likeCount").html(Number(likeCount)-1)
+                    }
+                    else{
+                        element.addClass('liked-post');
+                        element.removeClass('text-muted');
+                        element.attr("data-has-liked","True");
+                        var likeCount = element.find("#likeCount").text();
+                        element.find("#likeCount").html(Number(likeCount)+1)
+                    }
+                }
+            }
+        })
+    if(has_liked){
+        // unlike post and remove 
+        element.removeClass('liked-post');
+    }
+
+}
+</script>
+
+
+    <script>
+        function followUser(element){
+            var element = $(element);
+            var pk = element.attr("data-pk");
+            $.ajax({
+                    type: 'GET',
+                    url: "{% url 'follow' %}",
+                    data: {"user": pk},
+                    success: function(response){
+                        if(!response["valid"]){
+                            alert("Something went wrong trying to like this post. Let a webmaster know!")
+                        }
+                        else{
+                            if(response["followed"] === false){
+                                element.removeClass('btn-secondary');
+                                element.addClass('btn-primary')
+                                element.attr("data-is-following","false");
+                                // var likeCount = element.find("#likeCount").text();
+                                element.html("Follow")
+                                var followCount = Number($('#followCount').text())
+                                $('#followCount').html(followCount-1)
+                            }
+                            else{
+                                element.addClass('btn-secondary');
+                                element.removeClass('btn-primary');
+                                element.attr("data-is-following","True");
+                                // var likeCount = element.find("#likeCount").text();
+                                element.html("Unfollow")
+                                var followCount = Number($('#followCount').text())
+                                $('#followCount').html(followCount+1)
+                            }
+                        }
+                    }
+                })
+            if(has_liked){
+                // unlike post and remove 
+                element.removeClass('liked-post');
+            }
+    
+        }
+    </script>
+{% endblock content %}

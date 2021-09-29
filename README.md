@@ -17,6 +17,7 @@ Users will be notified when a user messages them, follows them, likes their post
 
 ## Mobile-Friendly
 ![responsive](https://github.com/will-turner123/willygram/blob/main/img/responsive.png?raw=true)
+
 Willygram was designed to work well on all screen sizes!
 
 ## Messages

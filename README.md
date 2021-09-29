@@ -13,6 +13,7 @@ On the Explore page, logged in users are able to see the 100 most popular recent
 
 ## Alerts
 ![Alerts](https://github.com/will-turner123/willygram/blob/main/img/alerts.png?raw=true)
+
 Users will be notified when a user messages them, follows them, likes their post or comments on their post. Notifications will display as unread at the top unless they have been marked as read.
 
 ## Mobile-Friendly
@@ -22,14 +23,17 @@ Willygram was designed to work well on all screen sizes!
 
 ## Messages
 ![enter image description here](https://github.com/will-turner123/willygram/blob/main/img/messages.png?raw=true)
+
 Users are able to privately message other users on Willygram
 
 ## View Followers
 ![enter image description here](https://github.com/will-turner123/willygram/blob/main/img/followers.png?raw=true)
+
 You can see who follows a user or who a user is following from their profile
 
 ## Update Profile
 ![update profile](https://github.com/will-turner123/willygram/blob/main/img/update_profile.png?raw=true)
+
 Once you've created an account, you can set a profile picture and a bio. You can also delete your posts from here or your feed.
 
 # Demo
